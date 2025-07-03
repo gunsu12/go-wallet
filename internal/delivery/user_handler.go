@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gunsu12/go-wallet/internal/domain"
+	"github.com/gunsu12/go-wallet/internal/middleware"
 	"github.com/gunsu12/go-wallet/internal/usecase"
 )
 
@@ -23,6 +24,12 @@ func NewUserHandler(r *gin.Engine, uc *usecase.UserUsecase) {
 
 	r.POST("/users/register", handler.Register)
 	r.POST("/users/login", handler.Login) // 👈 ini
+
+	auth := r.Group("/users")
+	auth.Use(middleware.AuthMiddleware())
+	{
+		auth.GET("/detail", handler.Detail)
+	}
 }
 
 // Register menangani endpoint POST /users/register
@@ -82,4 +89,29 @@ func (h *UserHandler) Login(c *gin.Context) {
 			"token":    user.Token,
 		},
 	})
+}
+
+func (h *UserHandler) Detail(c *gin.Context) {
+	uid, exist := c.Get("user_id")
+	if !exist {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "user id tidak ditemukan silahkan login terlebih dahulu: "})
+		return
+	}
+
+	// konversi lagi ini ya ke string?
+	// karena return dari c.Get("user_id") adalah interface jadi harus di type assertion lagi
+	uidStr, ok := uid.(string)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID invalid "})
+		return
+	}
+
+	// panggil usecase
+	user, err := h.usecase.GetByID(uidStr)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"id": user.ID, "name": user.Name, "username": user.Username, "email": user.Email, "phone_number": user.PhoneNumber, "created_at": user.CreatedAt})
 }

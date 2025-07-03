@@ -1,13 +1,12 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
-
-var jwtKey = []byte(os.Getenv("JWT_SECRET"))
 
 type JWTClaim struct {
 	UserID string `json:"user_id"`
@@ -27,7 +26,8 @@ func GenerateJWT(userID string, email string) (string, error) {
 		},
 	}
 
+	secret := os.Getenv("JWT_SECRET")
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	return token.SignedString(jwtKey)
+	fmt.Println("JWT_SECRET SAAT GENERATE:", secret)
+	return token.SignedString([]byte(secret))
 }
