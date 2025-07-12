@@ -113,5 +113,15 @@ func (h *UserHandler) Detail(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"id": user.ID, "name": user.Name, "username": user.Username, "email": user.Email, "phone_number": user.PhoneNumber, "created_at": user.CreatedAt})
+	c.JSON(http.StatusOK, gin.H{
+		"message": "berikut detil account",
+		"data": gin.H{
+			"id":           user.ID,
+			"name":         user.Name,
+			"username":     user.Username,
+			"email":        user.Email,
+			"phone_number": user.PhoneNumber,
+			"created_at":   user.CreatedAt,
+		},
+	})
 }

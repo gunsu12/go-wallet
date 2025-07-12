@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -29,9 +28,9 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		fmt.Println("HEADER :", authHeader)
-		fmt.Println("TOKEN STRING:", tokenString)
-		fmt.Println("ENV JWT_SECRET_SAAT_VERIF:", os.Getenv("JWT_SECRET"))
+		// fmt.Println("HEADER :", authHeader)
+		// fmt.Println("TOKEN STRING:", tokenString)
+		// fmt.Println("ENV JWT_SECRET_SAAT_VERIF:", os.Getenv("JWT_SECRET"))
 
 		// Verifikasi token
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -39,7 +38,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		})
 
 		if err != nil || !token.Valid {
-			fmt.Println("JWT ERROR:", err)
+			// fmt.Println("JWT ERROR:", err)
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token tidak valid", "debug": err.Error()})
 			c.Abort()
 			return
@@ -47,7 +46,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		// simpan claim ke konteks
 		if claims, ok := token.Claims.(jwt.MapClaims); ok {
-			fmt.Println("CLAIMS:", claims)
+			// fmt.Println("CLAIMS:", claims)
 			c.Set("user_id", claims["user_id"])
 			c.Set("email", claims["email"])
 		}

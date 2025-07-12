@@ -26,12 +26,18 @@ func main() {
 	db.RunMigrations(database)
 
 	// Inisialisasi komponen
+
+	// user
 	userRepo := repository.NewUserRepository(database)
 	userUsecase := usecase.NewUserUsecase(userRepo)
+	// wallet
+	walletRepo := repository.NewWalletRepository(database)
+	WalletUsecase := usecase.NewWalletUsecase(walletRepo)
 
 	// Router
 	r := gin.Default()
 	delivery.NewUserHandler(r, userUsecase)
+	delivery.NewWalletHandler(r, WalletUsecase)
 
 	// Jalankan server
 	port := os.Getenv("PORT")
