@@ -8,7 +8,7 @@ import (
 
 type Transaction struct {
 	ID                     string         `json:"id" gorm:"type:char(36);primaryKey"`
-	WalletID               string         `json:"wallet_id"`
+	WalletID               string         `json:"wallet_id" binding:"required"`
 	TransactionAmount      int64          `jsom:"transaction_amount" binding:"required,numeric"`
 	TransactionType        string         `json:"transaction_type"`
 	TransactionDescription string         `json:"transaction_description"`
@@ -22,7 +22,7 @@ type TransactionRepository interface {
 	FindByID(id string) (*Transaction, error)
 	FindByWallet(walet_id string) ([]Transaction, error)
 	FindByUser(user_id string) ([]Transaction, error)
-	Cancel(id string) error
+	Delete(id string) error
 }
 
 type TransactionUsecase interface {
@@ -30,5 +30,4 @@ type TransactionUsecase interface {
 	FindByID(id string) (*Transaction, error)
 	FindByWallet(walet_id string) ([]Transaction, error)
 	FindByUser(user_id string) ([]Transaction, error)
-	Cancel(id string) error
 }

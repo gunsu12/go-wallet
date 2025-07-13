@@ -33,11 +33,14 @@ func main() {
 	// wallet
 	walletRepo := repository.NewWalletRepository(database)
 	WalletUsecase := usecase.NewWalletUsecase(walletRepo)
-
+	// transaction
+	transactionRepo := repository.NewTransactionRepository(database)
+	TransactionUsecase := usecase.NewTransactionUsecase(transactionRepo)
 	// Router
 	r := gin.Default()
 	delivery.NewUserHandler(r, userUsecase)
 	delivery.NewWalletHandler(r, WalletUsecase)
+	delivery.NewTransactionHandler(r, TransactionUsecase)
 
 	// Jalankan server
 	port := os.Getenv("PORT")
